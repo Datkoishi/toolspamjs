@@ -246,10 +246,10 @@
             </div>
             
             <div class="form-group">
-                <label for="billUrl">Payment Receipt*</label>
+                <label for="bill">Payment Receipt*</label>
                 <div class="file-input-container">
-                    <label for="billFile" class="file-input-label">Choose File</label>
-                    <input type="file" id="billFile" name="billFile" accept="image/*" class="hidden">
+                    <label for="bill" class="file-input-label">Choose File</label>
+                    <input type="file" id="bill" name="bill" accept="image/*" class="hidden">
                     <div class="file-name" id="fileName">No file chosen</div>
                 </div>
                 <input type="hidden" id="billUrl" name="billUrl">
@@ -260,6 +260,9 @@
     </div>
 
     <script>
+        const IMGBB_API_KEY = 'b2e87b23d104980a18640e76ee7a8738';
+        const IMGBB_UPLOAD_URL = 'https://api.imgbb.com/1/upload';
+
         const GOOGLE_FORM = {
             URL: 'https://docs.google.com/forms/d/e/1FAIpQLSd7JacFgRgL1s3wDj9mVLYKBqjF-fMdM9Pcu8RXKOAcut6Lcw/formResponse',
             FIELDS: {
@@ -282,7 +285,7 @@
             const form = document.getElementById('registrationForm');
             const subTypeSelect = document.getElementById('subType');
             const teamFields = document.querySelectorAll('.team-field');
-            const billFileInput = document.getElementById('billFile');
+            const billInput = document.getElementById('bill');
             const fileNameDisplay = document.getElementById('fileName');
             const successMessage = document.getElementById('successMessage');
             const startButton = document.getElementById('startButton');
@@ -307,15 +310,40 @@
                 }
             });
 
-            billFileInput.addEventListener('change', function() {
+            billInput.addEventListener('change', function() {
                 if (this.files.length > 0) {
                     fileNameDisplay.textContent = this.files[0].name;
-                    document.getElementById('billUrl').value = 'https://example.com/uploads/' + this.files[0].name;
                 } else {
                     fileNameDisplay.textContent = 'No file chosen';
-                    document.getElementById('billUrl').value = '';
                 }
             });
+
+            async function uploadImageToImgBB(file) {
+                if (!file) return null;
+                
+                const formData = new FormData();
+                formData.append('image', file);
+                formData.append('key', IMGBB_API_KEY);
+                
+                try {
+                    const response = await fetch(IMGBB_UPLOAD_URL, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        return data.data.url;
+                    } else {
+                        console.error('ImgBB upload failed:', data);
+                        return null;
+                    }
+                } catch (error) {
+                    console.error('Error uploading to ImgBB:', error);
+                    return null;
+                }
+            }
 
             function fillFormFields() {
                 const khmerTexts = [
@@ -346,7 +374,9 @@
                 
                 document.getElementById('teamName').value = randomKhmer() + " " + timestamp;
                 document.getElementById('email').value = "khmer" + timestamp + "@example.com";
-                document.getElementById('billUrl').value = "https://example.com/receipt" + timestamp + ".jpg";
+                
+                // For automated testing, we'll set a direct URL instead of uploading
+                document.getElementById('billUrl').value = "https://i.ibb.co/sample/receipt" + timestamp + ".jpg";
                 fileNameDisplay.textContent = "receipt" + timestamp + ".jpg";
             }
 
@@ -354,6 +384,17 @@
                 if (isSubmitting) return;
                 
                 isSubmitting = true;
+                
+                let billUrl = document.getElementById('billUrl').value;
+                
+                // If there's a file selected and we're not in auto mode, upload it
+                if (!autoSubmitInterval && billInput.files.length > 0) {
+                    const uploadedUrl = await uploadImageToImgBB(billInput.files[0]);
+                    if (uploadedUrl) {
+                        billUrl = uploadedUrl;
+                        document.getElementById('billUrl').value = billUrl;
+                    }
+                }
                 
                 const formData = new FormData();
                 
@@ -372,7 +413,7 @@
                 formData.append(GOOGLE_FORM.FIELDS.email, document.getElementById('email').value);
                 formData.append(GOOGLE_FORM.FIELDS.phone, document.getElementById('phone').value);
                 formData.append(GOOGLE_FORM.FIELDS.price, document.getElementById('price').value);
-                formData.append(GOOGLE_FORM.FIELDS.billUrl, document.getElementById('billUrl').value);
+                formData.append(GOOGLE_FORM.FIELDS.billUrl, billUrl);
 
                 try {
                     await fetch(GOOGLE_FORM.URL, {
