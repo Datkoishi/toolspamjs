@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sports Registration Form</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: #3498db;
+            color: #fff;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-submit {
+            background-color: #2ecc71;
+            width: 100%;
+        }
+
+        .btn-submit:hover {
+            background-color: #27ae60;
+        }
+
+        .error {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .file-input-container {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input-label {
+            display: block;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .file-name {
+            margin-top: 5px;
+            font-size: 14px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+                margin: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sports Registration Form</h1>
+        
+        <div class="success-message" id="successMessage">
+            Your registration has been submitted successfully!
+        </div>
+        
+        <form id="registrationForm">
+            <div class="form-group">
+                <label for="sport">Sport*</label>
+                <select id="sport" name="sport" required>
+                    <option value="">Select a sport</option>
+                    <option value="Football">Football</option>
+                    <option value="Basketball">Basketball</option>
+                    <option value="Volleyball">Volleyball</option>
+                    <option value="Tennis">Tennis</option>
+                    <option value="Swimming">Swimming</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="subType">Sub Type*</label>
+                <select id="subType" name="subType" required>
+                    <option value="">Select a sub type</option>
+                    <option value="Individual">Individual</option>
+                    <option value="Team">Team</option>
+                </select>
+            </div>
+            
+            <div class="form-group team-field hidden">
+                <label for="teamName">Team Name*</label>
+                <input type="text" id="teamName" name="teamName">
+            </div>
+            
+            <div class="form-group team-field hidden">
+                <label for="teamList">Team Members List*</label>
+                <textarea id="teamList" name="teamList" placeholder="Enter the names of all team members, one per line"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="name">Full Name*</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="studentId">Student ID*</label>
+                <input type="text" id="studentId" name="studentId" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="class">Class*</label>
+                <input type="text" id="class" name="class" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email*</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="phone">Phone Number*</label>
+                <input type="tel" id="phone" name="phone" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="price">Registration Fee*</label>
+                <input type="number" id="price" name="price" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="billUrl">Payment Receipt*</label>
+                <div class="file-input-container">
+                    <label for="billFile" class="file-input-label">Choose File</label>
+                    <input type="file" id="billFile" name="billFile" accept="image/*" class="hidden" required>
+                    <div class="file-name" id="fileName">No file chosen</div>
+                </div>
+                <input type="hidden" id="billUrl" name="billUrl">
+            </div>
+            
+            <button type="submit" class="btn btn-submit">Submit Registration</button>
+        </form>
+    </div>
+
+    <script>
+        // Google Form Configuration
+        const GOOGLE_FORM = {
+            URL: 'https://docs.google.com/forms/d/e/1FAIpQLSd7JacFgRgL1s3wDj9mVLYKBqjF-fMdM9Pcu8RXKOAcut6Lcw/formResponse',
+            FIELDS: {
+                timestamp: 'entry.430699177',
+                sport: 'entry.1852553583',
+                subType: 'entry.1150567096',
+                teamName: 'entry.826148831',
+                teamList: 'entry.1523621309',
+                name: 'entry.753228178',
+                studentId: 'entry.152397648',
+                class: 'entry.1739780755',
+                email: 'entry.1071456056',
+                phone: 'entry.1118831544',
+                price: 'entry.458820244',
+                billUrl: 'entry.804108177'
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('registrationForm');
+            const subTypeSelect = document.getElementById('subType');
+            const teamFields = document.querySelectorAll('.team-field');
+            const billFileInput = document.getElementById('billFile');
+            const fileNameDisplay = document.getElementById('fileName');
+            const successMessage = document.getElementById('successMessage');
+
+            // Show/hide team fields based on subType selection
+            subTypeSelect.addEventListener('change', function() {
+                if (this.value === 'Team') {
+                    teamFields.forEach(field => {
+                        field.classList.remove('hidden');
+                        field.querySelector('input, textarea').setAttribute('required', 'required');
+                    });
+                } else {
+                    teamFields.forEach(field => {
+                        field.classList.add('hidden');
+                        field.querySelector('input, textarea').removeAttribute('required');
+                    });
+                }
+            });
+
+            // Display selected file name
+            billFileInput.addEventListener('change', function() {
+                if (this.files.length > 0) {
+                    fileNameDisplay.textContent = this.files[0].name;
+                    
+                    // In a real application, you would upload the file to a server here
+                    // and get a URL back to store in the billUrl field
+                    // For this example, we'll just simulate it
+                    document.getElementById('billUrl').value = 'https://example.com/uploads/' + this.files[0].name;
+                } else {
+                    fileNameDisplay.textContent = 'No file chosen';
+                    document.getElementById('billUrl').value = '';
+                }
+            });
+
+            // Form submission
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Validate form
+                if (!form.checkValidity()) {
+                    return false;
+                }
+
+                // Create form data for submission
+                const formData = new FormData();
+                
+                // Add timestamp
+                formData.append(GOOGLE_FORM.FIELDS.timestamp, new Date().toISOString());
+                
+                // Add other form fields
+                formData.append(GOOGLE_FORM.FIELDS.sport, document.getElementById('sport').value);
+                formData.append(GOOGLE_FORM.FIELDS.subType, document.getElementById('subType').value);
+                
+                if (document.getElementById('subType').value === 'Team') {
+                    formData.append(GOOGLE_FORM.FIELDS.teamName, document.getElementById('teamName').value);
+                    formData.append(GOOGLE_FORM.FIELDS.teamList, document.getElementById('teamList').value);
+                }
+                
+                formData.append(GOOGLE_FORM.FIELDS.name, document.getElementById('name').value);
+                formData.append(GOOGLE_FORM.FIELDS.studentId, document.getElementById('studentId').value);
+                formData.append(GOOGLE_FORM.FIELDS.class, document.getElementById('class').value);
+                formData.append(GOOGLE_FORM.FIELDS.email, document.getElementById('email').value);
+                formData.append(GOOGLE_FORM.FIELDS.phone, document.getElementById('phone').value);
+                formData.append(GOOGLE_FORM.FIELDS.price, document.getElementById('price').value);
+                formData.append(GOOGLE_FORM.FIELDS.billUrl, document.getElementById('billUrl').value);
+
+                // Submit the form
+                fetch(GOOGLE_FORM.URL, {
+                    method: 'POST',
+                    mode: 'no-cors', // This is important for Google Forms
+                    body: formData
+                })
+                .then(() => {
+                    // Show success message
+                    successMessage.style.display = 'block';
+                    
+                    // Reset form
+                    form.reset();
+                    fileNameDisplay.textContent = 'No file chosen';
+                    teamFields.forEach(field => {
+                        field.classList.add('hidden');
+                    });
+                    
+                    // Scroll to top
+                    window.scrollTo(0, 0);
+                    
+                    // Hide success message after 5 seconds
+                    setTimeout(() => {
+                        successMessage.style.display = 'none';
+                    }, 5000);
+                })
+                .catch(error => {
+                    console.error('Error submitting form:', error);
+                    alert('There was an error submitting your registration. Please try again.');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
