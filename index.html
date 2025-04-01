@@ -260,7 +260,6 @@
     </div>
 
     <script>
-        // Google Form Configuration
         const GOOGLE_FORM = {
             URL: 'https://docs.google.com/forms/d/e/1FAIpQLSd7JacFgRgL1s3wDj9mVLYKBqjF-fMdM9Pcu8RXKOAcut6Lcw/formResponse',
             FIELDS: {
@@ -294,7 +293,6 @@
             let submissionCount = 0;
             let isSubmitting = false;
 
-            // Show/hide team fields based on subType selection
             subTypeSelect.addEventListener('change', function() {
                 if (this.value === 'Team') {
                     teamFields.forEach(field => {
@@ -309,7 +307,6 @@
                 }
             });
 
-            // Display selected file name
             billFileInput.addEventListener('change', function() {
                 if (this.files.length > 0) {
                     fileNameDisplay.textContent = this.files[0].name;
@@ -320,54 +317,47 @@
                 }
             });
 
-            // Fill all form fields with default values
             function fillFormFields() {
-                const defaultText = "tool cho tất cả các ô input";
-                const timestamp = new Date().getTime(); // Add timestamp to make each submission unique
+                const khmerTexts = [
+                    "ខ្ញុំស្រលាញ់កីឡា",
+                    "សូមស្វាគមន៍មកកាន់ការប្រកួត",
+                    "ក្រុមយើងខ្ញុំឈ្នះហើយ",
+                    "សូមចុះឈ្មោះចូលរួម",
+                    "កីឡាករល្អបំផុត",
+                    "ការប្រកួតកីឡាថ្ងៃនេះ",
+                    "យើងជាក្រុមឈ្នះ",
+                    "សូមអរគុណសម្រាប់ការចូលរួម"
+                ];
                 
-                // Fill all text inputs
+                const randomKhmer = () => khmerTexts[Math.floor(Math.random() * khmerTexts.length)];
+                const timestamp = new Date().getTime();
+                
                 document.querySelectorAll('input[type="text"], input[type="tel"]').forEach(input => {
-                    input.value = defaultText + " " + timestamp;
+                    input.value = randomKhmer() + " " + timestamp;
                 });
                 
-                // Fill number input
-                document.getElementById('price').value = Math.floor(Math.random() * 1000) + 100; // Random price between 100-1099
-                
-                // Fill textarea
-                document.getElementById('teamList').value = defaultText + " " + timestamp;
-                
-                // Select options in dropdowns
+                document.getElementById('price').value = Math.floor(Math.random() * 1000) + 100;
+                document.getElementById('teamList').value = randomKhmer() + "\n" + randomKhmer() + "\n" + randomKhmer();
                 document.getElementById('sport').value = "Football";
                 document.getElementById('subType').value = "Team";
                 
-                // Trigger subType change event to show team fields
                 const event = new Event('change');
                 subTypeSelect.dispatchEvent(event);
                 
-                // Fill team fields
-                document.getElementById('teamName').value = defaultText + " " + timestamp;
-                
-                // Fill email with valid format
-                document.getElementById('email').value = "tool" + timestamp + "@example.com";
-                
-                // Set bill URL
+                document.getElementById('teamName').value = randomKhmer() + " " + timestamp;
+                document.getElementById('email').value = "khmer" + timestamp + "@example.com";
                 document.getElementById('billUrl').value = "https://example.com/receipt" + timestamp + ".jpg";
                 fileNameDisplay.textContent = "receipt" + timestamp + ".jpg";
             }
 
-            // Submit the form
             async function submitForm() {
-                if (isSubmitting) return; // Prevent multiple simultaneous submissions
+                if (isSubmitting) return;
                 
                 isSubmitting = true;
                 
-                // Create form data for submission
                 const formData = new FormData();
                 
-                // Add timestamp
                 formData.append(GOOGLE_FORM.FIELDS.timestamp, new Date().toISOString());
-                
-                // Add other form fields
                 formData.append(GOOGLE_FORM.FIELDS.sport, document.getElementById('sport').value);
                 formData.append(GOOGLE_FORM.FIELDS.subType, document.getElementById('subType').value);
                 
@@ -385,18 +375,15 @@
                 formData.append(GOOGLE_FORM.FIELDS.billUrl, document.getElementById('billUrl').value);
 
                 try {
-                    // Submit the form
                     await fetch(GOOGLE_FORM.URL, {
                         method: 'POST',
-                        mode: 'no-cors', // This is important for Google Forms
+                        mode: 'no-cors',
                         body: formData
                     });
                     
-                    // Increment submission counter
                     submissionCount++;
                     submissionCounter.textContent = `Submissions: ${submissionCount}`;
                     
-                    // Show success message briefly
                     successMessage.style.display = 'block';
                     setTimeout(() => {
                         successMessage.style.display = 'none';
@@ -409,25 +396,21 @@
                 }
             }
 
-            // Start auto-submission
             startButton.addEventListener('click', function() {
-                if (autoSubmitInterval) return; // Already running
+                if (autoSubmitInterval) return;
                 
-                // Initial submission
                 fillFormFields();
                 submitForm();
                 
-                // Set interval for continuous submissions
                 autoSubmitInterval = setInterval(() => {
                     fillFormFields();
                     submitForm();
-                }, 2000); // Submit every 2 seconds
+                }, 2000);
                 
                 startButton.disabled = true;
                 stopButton.disabled = false;
             });
 
-            // Stop auto-submission
             stopButton.addEventListener('click', function() {
                 if (autoSubmitInterval) {
                     clearInterval(autoSubmitInterval);
@@ -437,17 +420,14 @@
                 }
             });
 
-            // Regular form submission
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
                 
-                // Only handle manual submissions when auto-submit is not running
                 if (!autoSubmitInterval) {
                     submitForm();
                 }
             });
             
-            // Initialize
             stopButton.disabled = true;
         });
     </script>
