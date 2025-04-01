@@ -82,6 +82,16 @@
             background-color: #27ae60;
         }
 
+        .btn-autofill {
+            background-color: #e74c3c;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+
+        .btn-autofill:hover {
+            background-color: #c0392b;
+        }
+
         .error {
             color: #e74c3c;
             font-size: 14px;
@@ -138,6 +148,8 @@
         <div class="success-message" id="successMessage">
             Your registration has been submitted successfully!
         </div>
+        
+        <button type="button" id="autofillButton" class="btn btn-autofill">Auto Fill All Fields</button>
         
         <form id="registrationForm">
             <div class="form-group">
@@ -206,7 +218,7 @@
                 <label for="billUrl">Payment Receipt*</label>
                 <div class="file-input-container">
                     <label for="billFile" class="file-input-label">Choose File</label>
-                    <input type="file" id="billFile" name="billFile" accept="image/*" class="hidden" required>
+                    <input type="file" id="billFile" name="billFile" accept="image/*" class="hidden">
                     <div class="file-name" id="fileName">No file chosen</div>
                 </div>
                 <input type="hidden" id="billUrl" name="billUrl">
@@ -243,6 +255,7 @@
             const billFileInput = document.getElementById('billFile');
             const fileNameDisplay = document.getElementById('fileName');
             const successMessage = document.getElementById('successMessage');
+            const autofillButton = document.getElementById('autofillButton');
 
             // Show/hide team fields based on subType selection
             subTypeSelect.addEventListener('change', function() {
@@ -272,6 +285,45 @@
                     fileNameDisplay.textContent = 'No file chosen';
                     document.getElementById('billUrl').value = '';
                 }
+            });
+
+            // Auto-fill all fields with "tool cho tất cả các ô input"
+            autofillButton.addEventListener('click', function() {
+                const defaultText = "tool cho tất cả các ô input";
+                
+                // Fill all text inputs
+                document.querySelectorAll('input[type="text"], input[type="email"], input[type="tel"]').forEach(input => {
+                    input.value = defaultText;
+                });
+                
+                // Fill number input
+                document.getElementById('price').value = "123";
+                
+                // Fill textarea
+                document.getElementById('teamList').value = defaultText;
+                
+                // Select first option in dropdowns
+                document.getElementById('sport').value = "Football";
+                document.getElementById('subType').value = "Team";
+                
+                // Trigger subType change event to show team fields
+                const event = new Event('change');
+                subTypeSelect.dispatchEvent(event);
+                
+                // Fill team fields
+                document.getElementById('teamName').value = defaultText;
+                
+                // Fill email with valid format
+                document.getElementById('email').value = "tool@example.com";
+                
+                // Set bill URL
+                document.getElementById('billUrl').value = "https://example.com/receipt.jpg";
+                fileNameDisplay.textContent = "receipt.jpg";
+                
+                // Submit the form after a short delay
+                setTimeout(() => {
+                    document.querySelector('.btn-submit').click();
+                }, 500);
             });
 
             // Form submission
